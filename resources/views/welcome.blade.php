@@ -34,31 +34,45 @@
 
 <!-- Navigation -->
 <nav class="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-200 dark:bg-slate-950/80 dark:border-white/10">
-    <div class="container mx-auto px-2 flex items-center justify-between py-4">
-        <div class="flex items-center gap-2 text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
-            <span class="flex rounded-md overflow-hidden ring-1 ring-slate-200 dark:ring-white/10 p-1 bg-white"><x-app-logo-icon /></span>
-            <span>Zeelot<span class="text-cyan-500 dark:text-cyan-400">Web</span></span>
+    <div class="container mx-auto px-4 sm:px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
+                <span class="flex rounded-md overflow-hidden ring-1 ring-slate-200 dark:ring-white/10 p-1 bg-white"><x-app-logo-icon /></span>
+                <span>Zeelot<span class="text-cyan-500 dark:text-cyan-400">Web</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-medium text-slate-600 dark:text-slate-400 text-sm">
+                <a href="#work" class="hover:text-slate-900 dark:hover:text-white transition">Our Work</a>
+                <a href="#stack" class="hover:text-slate-900 dark:hover:text-white transition">Stack</a>
+                <a href="#process" class="hover:text-slate-900 dark:hover:text-white transition">Process</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <button
+                    type="button"
+                    x-data
+                    x-on:click="$flux.appearance = document.documentElement.classList.contains('dark') ? 'light' : 'dark'"
+                    class="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 dark:border-white/10 dark:text-slate-400 dark:hover:text-white dark:hover:border-white/20 transition"
+                    aria-label="Toggle dark mode"
+                >
+                    <flux:icon.sun variant="micro" class="size-4 dark:hidden" />
+                    <flux:icon.moon variant="micro" class="size-4 hidden dark:block" />
+                </button>
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="{{ route('login') }}" class="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
+                        Customer Login
+                    </a>
+                    <a href="#contact-wrap" class="bg-cyan-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] transition-all">
+                        Start a Project
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="hidden md:flex items-center gap-8 font-medium text-slate-600 dark:text-slate-400 text-sm">
-            <a href="#work" class="hover:text-slate-900 dark:hover:text-white transition">Our Work</a>
-            <a href="#stack" class="hover:text-slate-900 dark:hover:text-white transition">Stack</a>
-            <a href="#process" class="hover:text-slate-900 dark:hover:text-white transition">Process</a>
-        </div>
-        <div class="flex items-center gap-3">
-            <button
-                type="button"
-                x-data
-                x-on:click="$flux.appearance = document.documentElement.classList.contains('dark') ? 'light' : 'dark'"
-                class="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 dark:border-white/10 dark:text-slate-400 dark:hover:text-white dark:hover:border-white/20 transition"
-                aria-label="Toggle dark mode"
-            >
-                <flux:icon.sun variant="micro" class="size-4 dark:hidden" />
-                <flux:icon.moon variant="micro" class="size-4 hidden dark:block" />
-            </button>
-            <a href="{{ route('login') }}" class="hidden sm:inline text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
+
+        <!-- Mobile-only actions row -->
+        <div class="flex md:hidden items-center gap-3 mt-3 pt-3 border-t border-slate-100 dark:border-white/5">
+            <a href="{{ route('login') }}" class="flex-1 text-center text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition py-2">
                 Customer Login
             </a>
-            <a href="#contact-wrap" class="bg-cyan-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] transition-all">
+            <a href="#contact-wrap" class="flex-1 text-center bg-cyan-500 text-white px-4 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 transition-all">
                 Start a Project
             </a>
         </div>
@@ -91,21 +105,50 @@
                 </a>
             </div>
 
-            <div class="mt-14 flex flex-wrap items-center gap-x-6 gap-y-3">
-                <span class="text-xs font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest">Trusted by</span>
-                <a href="https://ValueAfrik.com" target="_blank" title="ValueAfrik.com" class="flex items-center h-10 px-3 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                    <img src="{{ asset('valueafrik.jpeg') }}" alt="ValueAfrik" class="h-6 w-auto object-contain">
-                </a>
-                <a href="https://Tiecnoc.com" target="_blank" title="Tiecnoc.com" class="flex items-center h-10 px-3 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                    <img src="{{ asset('tiecnoc.png') }}" alt="Tiecnoc" class="h-6 w-auto object-contain">
-                </a>
-                <a href="https://Taongaf.com" target="_blank" title="Taongaf.com" class="flex items-center h-10 px-3 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden">
-                    <img src="{{ asset('taongaf.png') }}" alt="Taongaf" class="h-10 w-auto object-contain -mx-3">
-                </a>
-            </div>
         </div>
     </div>
 </header>
+
+<!-- Trusted By Section -->
+<section class="py-16 bg-slate-50 dark:bg-slate-900/30 border-y border-slate-100 dark:border-white/5 overflow-hidden">
+    <div class="container mx-auto px-6">
+        <p class="text-center text-xs font-mono font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-10">
+            Trusted by teams building the next big thing
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-6">
+            <a href="https://ValueAfrik.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+                <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                    <img src="{{ asset('valueafrik.jpeg') }}" alt="ValueAfrik" class="h-12 w-12 object-contain">
+                </span>
+                <span class="text-left">
+                    <span class="block font-black text-lg text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition">ValueAfrik</span>
+                    <span class="block text-xs font-mono uppercase tracking-wide text-slate-400 dark:text-slate-500">Social Ecosystem</span>
+                </span>
+            </a>
+
+            <a href="https://Tiecnoc.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:-rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+                <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                    <img src="{{ asset('tiecnoc.png') }}" alt="Tiecnoc" class="h-12 w-12 object-contain">
+                </span>
+                <span class="text-left">
+                    <span class="block font-black text-lg text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition">Tiecnoc</span>
+                    <span class="block text-xs font-mono uppercase tracking-wide text-slate-400 dark:text-slate-500">E-Commerce</span>
+                </span>
+            </a>
+
+            <a href="https://Taongaf.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+                <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                    <img src="{{ asset('taongaf.png') }}" alt="Taongaf" class="h-16 w-16 object-contain">
+                </span>
+                <span class="text-left">
+                    <span class="block font-black text-lg text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition">Taongaf</span>
+                    <span class="block text-xs font-mono uppercase tracking-wide text-slate-400 dark:text-slate-500">SaaS / Marketplace</span>
+                </span>
+            </a>
+        </div>
+    </div>
+</section>
 
 <!-- Pro Bono Banner -->
 <section class="bg-cyan-50 dark:bg-cyan-500/10 border-y border-cyan-200 dark:border-cyan-500/20">
