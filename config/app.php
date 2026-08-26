@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Internal Access Control
+    |--------------------------------------------------------------------------
+    */
+
+    'super_admin_email' => env('SUPER_ADMIN_EMAIL', 'zeelotwebgrp@gmail.com'),
+
+    'registration_open' => env('REGISTRATION_OPEN', true),
+
 ];

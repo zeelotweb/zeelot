@@ -64,9 +64,45 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    /**
+     * Admin-tier and above (admin or super_admin).
+     */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role, ['admin', 'super_admin'], true);
+    }
+
+    /**
+     * Has any backend access at all (staff and above).
+     */
+    public function isStaff(): bool
+    {
+        return in_array($this->role, ['staff', 'admin', 'super_admin'], true);
+    }
+
+    /**
+     * Whether this user is allowed to change $target's role.
+     */
+    public function canManageRoleOf(User $target): bool
+    {
+        if ($target->isSuperAdmin()) {
+            return false;
+        }
+
+        if ($this->isSuperAdmin()) {
+            return in_array($target->role, ['admin', 'staff', 'customer'], true);
+        }
+
+        if ($this->isAdmin()) {
+            return in_array($target->role, ['staff', 'customer'], true);
+        }
+
+        return false;
     }
 
     /**
@@ -75,5 +111,14 @@ class User extends Authenticatable
     public function projects()
     {
         return $this->hasMany(Project::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (User $user) {
+            if ($user->email === config('app.super_admin_email')) {
+                $user->role = 'super_admin';
+            }
+        });
     }
 }

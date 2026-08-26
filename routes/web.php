@@ -46,4 +46,5 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Volt::route('leads', 'admin.leads.index')->name('admin.leads.index');
     Volt::route('projects', 'admin.projects.index')->name('admin.projects.index');
     Volt::route('projects/{project}', 'admin.projects.show')->name('admin.projects.show');
+    Volt::route('team', 'admin.team.index')->name('admin.team.index');
 });

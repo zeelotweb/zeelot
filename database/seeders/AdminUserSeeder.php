@@ -10,21 +10,22 @@ class AdminUserSeeder extends Seeder
 {
     /**
      * Seed the application's database.
+     *
+     * The super admin role itself is enforced by User::booted() for whichever
+     * account matches config('app.super_admin_email') — this seeder only
+     * needs to make sure that account exists.
      */
     public function run(): void
     {
-        $user = User::where('email', 'zeelotwebgrp@gmail.com')->first();
+        $email = config('app.super_admin_email');
 
-        if ($user) {
-            $user->forceFill(['role' => 'admin'])->save();
-
+        if (User::where('email', $email)->exists()) {
             return;
         }
 
         User::create([
             'name' => 'Zeelot Web',
-            'email' => 'zeelotwebgrp@gmail.com',
-            'role' => 'admin',
+            'email' => $email,
             'password' => Str::random(32),
             'email_verified_at' => now(),
         ]);

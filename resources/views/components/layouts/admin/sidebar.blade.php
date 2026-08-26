@@ -7,32 +7,27 @@
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('admin.dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
             </a>
 
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="briefcase" :href="route('portal.projects.index')" :current="request()->routeIs('portal.projects.*')" wire:navigate>{{ __('Projects') }}</flux:navlist.item>
+            <flux:navlist.item icon="arrow-uturn-left" :href="route('dashboard')" wire:navigate class="mb-2">
+                {{ __('Back to Dashboard') }}
+            </flux:navlist.item>
 
-                    @if(auth()->user()?->isStaff())
-                        <flux:navlist.item icon="shield-check" :href="route('admin.dashboard')" wire:navigate>{{ __('Admin Panel') }}</flux:navlist.item>
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('Admin')" class="grid">
+                    <flux:navlist.item icon="chart-bar" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Overview') }}</flux:navlist.item>
+                    <flux:navlist.item icon="inbox" :href="route('admin.leads.index')" :current="request()->routeIs('admin.leads.*')" wire:navigate>{{ __('Leads Inbox') }}</flux:navlist.item>
+                    <flux:navlist.item icon="folder" :href="route('admin.projects.index')" :current="request()->routeIs('admin.projects.*')" wire:navigate>{{ __('Projects') }}</flux:navlist.item>
+
+                    @if(auth()->user()?->isAdmin())
+                        <flux:navlist.item icon="users" :href="route('admin.team.index')" :current="request()->routeIs('admin.team.*')" wire:navigate>{{ __('Team') }}</flux:navlist.item>
                     @endif
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
-                </flux:navlist.item>
-            </flux:navlist>
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">

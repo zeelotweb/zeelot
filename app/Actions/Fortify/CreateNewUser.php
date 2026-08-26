@@ -2,9 +2,11 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 class CreateNewUser implements CreatesNewUsers
@@ -30,10 +32,23 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        return User::create([
+        $invitation = Invitation::valid()->where('token', $input['invitation'] ?? null)->first();
+
+        if (! config('app.registration_open') && ! $invitation) {
+            throw ValidationException::withMessages([
+                'email' => 'This registration link is invalid or has expired.',
+            ]);
+        }
+
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
+            'role' => $invitation->role ?? 'customer',
         ]);
+
+        $invitation?->update(['accepted_at' => now()]);
+
+        return $user;
     }
 }
