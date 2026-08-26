@@ -13,11 +13,13 @@
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
         "laravel/jetstream": "^5.4",
-        "laravel/octane": "^2.17",
+        "laravel/octane": "^2.19",
         "laravel/socialite": "^5.30",
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.9.0",
         "livewire/volt": "^1.7.0",
+        "spiral/roadrunner-cli": "^2.6.0",
+        "spiral/roadrunner-http": "^3.3.0",
         "stripe/stripe-php": "^21.2"
     },
     "require-dev": {
