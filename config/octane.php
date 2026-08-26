@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'server' => env('OCTANE_SERVER'),
+    'server' => env('OCTANE_SERVER', 'roadrunner'),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'https' => env('OCTANE_HTTPS'),
+    'https' => env('OCTANE_HTTPS', false),
 
     /*
     |--------------------------------------------------------------------------
