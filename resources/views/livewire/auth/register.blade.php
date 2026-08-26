@@ -5,6 +5,16 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        <a
+            href="{{ route('auth.google.redirect') }}"
+            class="inline-flex w-full items-center justify-center gap-3 rounded-lg border border-zinc-200 dark:border-white/10 px-4 py-2.5 text-sm font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-white/5 transition"
+        >
+            <x-google-icon class="size-5" />
+            {{ __('Continue with Google') }}
+        </a>
+
+        <flux:separator text="{{ __('or') }}" />
+
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
             <!-- Name -->

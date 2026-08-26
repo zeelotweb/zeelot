@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -14,6 +15,9 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::post('/stripe/webhook', StripeWebhookController::class)->name('stripe.webhook');
+
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
