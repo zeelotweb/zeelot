@@ -1,1 +1,1 @@
-<img src="{{ asset('storage/siteicons/7.jpg') }}" alt="ZeelotWeb" class="h-10" />
+<img src="{{ asset('7.jpg') }}" alt="ZeelotWeb" class="h-10" />
