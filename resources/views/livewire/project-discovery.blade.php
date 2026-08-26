@@ -10,8 +10,17 @@
     @else
         <form wire:submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2 mb-4">
-                <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Start a Project</h2>
-                <p class="text-slate-600 dark:text-slate-400">Tell me about your vision and let's build the engine to power it.</p>
+                @if($isProBono)
+                    <span class="inline-block mb-3 text-xs font-mono font-bold tracking-wide text-cyan-600 dark:text-cyan-400 uppercase bg-cyan-100 dark:bg-cyan-500/10 border border-cyan-300 dark:border-cyan-500/30 rounded-full px-3 py-1">Pro Bono Application</span>
+                @endif
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">{{ $isProBono ? 'Apply for a Pro Bono Slot' : 'Start a Project' }}</h2>
+                <p class="text-slate-600 dark:text-slate-400">
+                    @if($isProBono)
+                        Tell me about your business and what you need — slots are limited to 2 a month and reviewed case by case.
+                    @else
+                        Tell me about your vision and let's build the engine to power it.
+                    @endif
+                </p>
             </div>
 
             <div>
@@ -26,24 +35,31 @@
                 @error('email') <span class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
 
-            <div class="md:col-span-2">
-                <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Project Budget (Starting at)</label>
-                <select wire:model="budget" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none transition">
-                    <option value="1500">$1,500 - $3,000</option>
-                    <option value="5000">$5,000 - $10,000</option>
-                    <option value="10000">$10,000+</option>
-                </select>
-            </div>
+            @if($isProBono)
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Business Name</label>
+                    <input wire:model="company" type="text" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                </div>
+            @else
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Project Budget (Starting at)</label>
+                    <select wire:model="budget" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                        <option value="1500">$1,500 - $3,000</option>
+                        <option value="5000">$5,000 - $10,000</option>
+                        <option value="10000">$10,000+</option>
+                    </select>
+                </div>
+            @endif
 
             <div class="md:col-span-2">
-                <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Tell me about the project</label>
+                <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">{{ $isProBono ? 'Tell me about your business and what you need' : 'Tell me about the project' }}</label>
                 <textarea wire:model="message" rows="4" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none transition"></textarea>
                 @error('message') <span class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
 
             <div class="md:col-span-2 text-right">
                 <button type="submit" class="w-full md:w-auto bg-cyan-500 hover:bg-cyan-400 text-white font-bold px-12 py-4 rounded-xl transition shadow-lg shadow-cyan-500/30">
-                    Submit Discovery Form
+                    {{ $isProBono ? 'Submit Pro Bono Application' : 'Submit Discovery Form' }}
                 </button>
             </div>
         </form>

@@ -2,15 +2,46 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
     protected $fillable = [
-        'name', 
-        'email', 
-        'company', 
-        'budget', 
-        'message'
+        'name',
+        'email',
+        'company',
+        'budget',
+        'message',
+        'status',
+        'is_pro_bono',
+        'converted_to_project_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_pro_bono' => 'boolean',
+        ];
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Project, $this>
+     */
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'converted_to_project_id');
+    }
+
+    public function scopeProBono(Builder $query): Builder
+    {
+        return $query->where('is_pro_bono', true);
+    }
+
+    public static function proBonoCountThisMonth(): int
+    {
+        return static::proBono()
+            ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+            ->count();
+    }
 }

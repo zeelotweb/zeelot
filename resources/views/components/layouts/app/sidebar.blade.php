@@ -14,7 +14,16 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    <flux:navlist.item icon="briefcase" :href="route('portal.projects.index')" :current="request()->routeIs('portal.projects.*')" wire:navigate>{{ __('Projects') }}</flux:navlist.item>
                 </flux:navlist.group>
+
+                @if(auth()->user()?->isAdmin())
+                    <flux:navlist.group :heading="__('Admin')" class="grid">
+                        <flux:navlist.item icon="chart-bar" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Overview') }}</flux:navlist.item>
+                        <flux:navlist.item icon="inbox" :href="route('admin.leads.index')" :current="request()->routeIs('admin.leads.*')" wire:navigate>{{ __('Leads Inbox') }}</flux:navlist.item>
+                        <flux:navlist.item icon="folder" :href="route('admin.projects.index')" :current="request()->routeIs('admin.projects.*')" wire:navigate>{{ __('All Projects') }}</flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
             </flux:navlist>
 
             <flux:spacer />

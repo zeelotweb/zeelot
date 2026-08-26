@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('lead_id')->nullable()->constrained('leads')->nullOnDelete();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('status')->default('active');
+            $table->boolean('is_pro_bono')->default(false);
             $table->timestamps();
         });
     }

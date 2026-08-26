@@ -2,6 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Mail\NewLeadAlert;
+use App\Models\Lead;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class ProjectDiscovery extends Component
@@ -12,6 +15,7 @@ class ProjectDiscovery extends Component
     public $budget = '5000';
     public $message;
     public $success = false;
+    public bool $isProBono = false;
 
     protected $rules = [
         'name' => 'required|min:3',
@@ -19,29 +23,33 @@ class ProjectDiscovery extends Component
         'message' => 'required|min:10',
     ];
 
+    public function mount(): void
+    {
+        $this->isProBono = request()->query('intent') === 'probono';
 
+        if ($this->isProBono) {
+            $this->budget = '0';
+        }
+    }
 
+    public function submit()
+    {
+        $this->validate();
 
-public function submit()
-{
-    // 1. Validate the incoming data based on the $rules
-    $validatedData = $this->validate();
+        $lead = Lead::create([
+            'name' => $this->name,
+            'email' => $this->email,
+            'company' => $this->company,
+            'budget' => $this->budget,
+            'message' => $this->message,
+            'is_pro_bono' => $this->isProBono,
+        ]);
 
-    // 2. Persist the data to the 'leads' table
-    \App\Models\Lead::create([
-        'name' => $this->name,
-        'email' => $this->email,
-        'company' => $this->company,
-        'budget' => $this->budget,
-        'message' => $this->message,
-    ]);
+        Mail::to(config('mail.admin_address'))->send(new NewLeadAlert($lead));
 
-    // 3. Trigger success state and reset form
-    $this->success = true;
-    $this->reset(['name', 'email', 'company', 'message', 'budget']);
-}
-
-
+        $this->success = true;
+        $this->reset(['name', 'email', 'company', 'message', 'budget']);
+    }
 
     public function render()
     {

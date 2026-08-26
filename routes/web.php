@@ -1,11 +1,9 @@
 <?php
 
+use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
-use App\Models\Lead;
-
-use App\Http\Middleware\AdminSecret;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,21 +13,10 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::post('/stripe/webhook', StripeWebhookController::class)->name('stripe.webhook');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
-
-
-
-
-Route::get('/admin/leads', function () {
-    return view('admin.leads', [
-        'leads' => \App\Models\Lead::latest()->get()
-    ]);
-})->middleware(AdminSecret::class);
-
-
-
-
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');
@@ -45,4 +32,14 @@ Route::get('/admin/leads', function () {
             ),
         )
         ->name('two-factor.show');
+
+    Volt::route('projects', 'portal.projects.index')->name('portal.projects.index');
+    Volt::route('projects/{project}', 'portal.projects.show')->name('portal.projects.show');
+});
+
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {
+    Volt::route('/', 'admin.dashboard')->name('admin.dashboard');
+    Volt::route('leads', 'admin.leads.index')->name('admin.leads.index');
+    Volt::route('projects', 'admin.projects.index')->name('admin.projects.index');
+    Volt::route('projects/{project}', 'admin.projects.show')->name('admin.projects.show');
 });

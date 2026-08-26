@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            //
+            $table->boolean('is_pro_bono')->default(false)->after('budget');
+            $table->foreignId('converted_to_project_id')->nullable()->after('status')
+                ->constrained('projects')->nullOnDelete();
         });
     }
 
@@ -22,7 +24,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            //
+            $table->dropConstrainedForeignId('converted_to_project_id');
+            $table->dropColumn('is_pro_bono');
         });
     }
 };

@@ -35,9 +35,9 @@
 
 <!-- Navigation -->
 <nav class="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-200 dark:bg-slate-950/80 dark:border-white/10">
-    <div class="container mx-auto px-6 flex items-center justify-between py-4">
+    <div class="container mx-auto px-2 flex items-center justify-between py-4">
         <div class="flex items-center gap-2 text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
-            <span class="flex rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-white/10"><x-app-logo-icon /></span>
+            <span class="flex rounded-md overflow-hidden ring-1 ring-slate-200 dark:ring-white/10 p-1 bg-white"><x-app-logo-icon /></span>
             <span>Zeelot<span class="text-cyan-500 dark:text-cyan-400">Web</span></span>
         </div>
         <div class="hidden md:flex items-center gap-8 font-medium text-slate-600 dark:text-slate-400 text-sm">

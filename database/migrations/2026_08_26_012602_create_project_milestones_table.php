@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('project_milestones', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->decimal('amount', 10, 2);
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->string('status')->default('pending');
+            $table->timestamp('invoiced_at')->nullable();
+            $table->timestamp('paid_at')->nullable();
+            $table->string('stripe_checkout_session_id')->nullable();
+            $table->string('stripe_payment_intent_id')->nullable();
             $table->timestamps();
         });
     }
