@@ -91,11 +91,17 @@
                 </a>
             </div>
 
-            <div class="mt-14 flex flex-wrap items-center gap-x-8 gap-y-2 text-xs font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                <span>Trusted by</span>
-                <span class="text-slate-500 dark:text-slate-400">ValueAfrik.com</span>
-                <span class="text-slate-500 dark:text-slate-400">Tiecnoc.com</span>
-                <span class="text-slate-500 dark:text-slate-400">Taongaf.com</span>
+            <div class="mt-14 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <span class="text-xs font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest">Trusted by</span>
+                <a href="https://ValueAfrik.com" target="_blank" title="ValueAfrik.com" class="flex items-center h-10 px-3 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <img src="{{ asset('valueafrik.jpeg') }}" alt="ValueAfrik" class="h-6 w-auto object-contain">
+                </a>
+                <a href="https://Tiecnoc.com" target="_blank" title="Tiecnoc.com" class="flex items-center h-10 px-3 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <img src="{{ asset('tiecnoc.png') }}" alt="Tiecnoc" class="h-6 w-auto object-contain">
+                </a>
+                <a href="https://Taongaf.com" target="_blank" title="Taongaf.com" class="flex items-center h-10 px-3 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden">
+                    <img src="{{ asset('taongaf.png') }}" alt="Taongaf" class="h-10 w-auto object-contain -mx-3">
+                </a>
             </div>
         </div>
     </div>
