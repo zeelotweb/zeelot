@@ -3,9 +3,8 @@
   "configurations": [
     {
       "name": "zeelotweb-dev",
-      "runtimeExecutable": "php",
-      "runtimeArgs": ["artisan", "serve", "--port=8010"],
-      "port": 8010
+      "url": "http://127.0.0.1:8000",
+      "port": 8000
     }
   ]
 }
