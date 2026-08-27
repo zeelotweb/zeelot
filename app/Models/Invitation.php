@@ -51,4 +51,14 @@ class Invitation extends Model
             'expires_at' => now()->addDays(7),
         ]);
     }
+
+    /**
+     * Grant an existing account the invited role directly — used when the
+     * invite target already has a login, instead of the register-link flow.
+     */
+    public function acceptFor(User $user): void
+    {
+        $user->update(['role' => $this->role]);
+        $this->update(['accepted_at' => now()]);
+    }
 }

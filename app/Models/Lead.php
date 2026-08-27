@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\LeadDeclined;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,8 @@ class Lead extends Model
             'status' => 'declined',
             'decline_reason' => $reason,
         ]);
+
+        User::where('email', $this->email)->first()?->notify(new LeadDeclined($this));
     }
 
     protected function casts(): array

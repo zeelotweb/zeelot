@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Invitation;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -25,6 +26,32 @@ class NotificationBell extends Component
     public function markAllRead(): void
     {
         auth()->user()->unreadNotifications->markAsRead();
+
+        $this->dispatch('notifications-updated');
+    }
+
+    public function acceptInvite(string $notificationId)
+    {
+        $notification = auth()->user()->notifications()->where('id', $notificationId)->first();
+        $invitation = $notification ? Invitation::find($notification->data['invitation_id'] ?? null) : null;
+
+        if ($invitation && is_null($invitation->accepted_at)) {
+            $invitation->acceptFor(auth()->user());
+        }
+
+        $notification?->markAsRead();
+
+        return $this->redirect(route('admin.dashboard'));
+    }
+
+    public function declineInvite(string $notificationId): void
+    {
+        $notification = auth()->user()->notifications()->where('id', $notificationId)->first();
+        $invitation = $notification ? Invitation::find($notification->data['invitation_id'] ?? null) : null;
+
+        $invitation?->delete();
+
+        $notification?->markAsRead();
 
         $this->dispatch('notifications-updated');
     }

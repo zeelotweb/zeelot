@@ -3,6 +3,7 @@
 use App\Mail\InvitationMail;
 use App\Models\Invitation;
 use App\Models\User;
+use App\Notifications\StaffInviteReceived;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Volt\Component;
 
@@ -38,10 +39,17 @@ new class extends Component
 
         $invitation = Invitation::createFor($this->inviteEmail, $this->inviteRole, auth()->user());
 
-        Mail::to($this->inviteEmail)->send(new InvitationMail($invitation));
+        $existingUser = User::where('email', $this->inviteEmail)->first();
+
+        if ($existingUser) {
+            $existingUser->notify(new StaffInviteReceived($invitation));
+            session()->flash('status', "{$existingUser->name} already has an account — they'll see this invite in their notifications.");
+        } else {
+            Mail::to($this->inviteEmail)->send(new InvitationMail($invitation));
+            session()->flash('status', "Invitation sent to {$this->inviteEmail}.");
+        }
 
         $this->reset('inviteEmail');
-        session()->flash('status', "Invitation sent to {$this->inviteEmail}.");
     }
 
     public function pendingInvitations()
@@ -105,7 +113,7 @@ new class extends Component
     </div>
 
     @if (session('status'))
-        <flux:callout variant="success" icon="check-circle" heading="{{ session('status') }}" />
+        <flux:callout variant="success" icon="check-circle" :heading="session('status')" />
     @endif
 
     <flux:card class="space-y-4">
