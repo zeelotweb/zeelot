@@ -66,7 +66,7 @@
                             Customer Login
                         </a>
                     @endauth
-                    <a href="#contact-wrap" class="bg-cyan-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] transition-all">
+                    <a href="#contact-wrap" x-data x-on:click="Livewire.dispatch('resetDiscoveryForm')" class="bg-cyan-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] transition-all">
                         Start a Project
                     </a>
                 </div>
@@ -84,7 +84,7 @@
                     Customer Login
                 </a>
             @endauth
-            <a href="#contact-wrap" class="flex-1 text-center bg-cyan-500 text-white px-4 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 transition-all">
+            <a href="#contact-wrap" x-data x-on:click="Livewire.dispatch('resetDiscoveryForm')" class="flex-1 text-center bg-cyan-500 text-white px-4 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 transition-all">
                 Start a Project
             </a>
         </div>
@@ -370,7 +370,7 @@
                 <li class="flex gap-3"><span class="text-cyan-500 font-bold">✓</span> Needs a simple, focused website or web app</li>
                 <li class="flex gap-3"><span class="text-cyan-500 font-bold">✓</span> Can commit to covering hosting costs only</li>
             </ul>
-            <a href="#contact-wrap" class="inline-flex w-full sm:w-auto justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-3.5 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition">
+            <a href="?intent=probono#contact-wrap" class="inline-flex w-full sm:w-auto justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-3.5 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition">
                 Apply for a Pro Bono Slot
             </a>
         </div>

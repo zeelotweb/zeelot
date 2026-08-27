@@ -28,7 +28,12 @@
             <flux:card class="space-y-1">
                 <span class="text-xs font-mono uppercase tracking-widest text-slate-400 dark:text-slate-500">Projects</span>
                 <div class="text-3xl font-black text-slate-900 dark:text-white">{{ auth()->user()->projects()->count() }}</div>
-                <flux:link :href="route('portal.projects.index')" wire:navigate class="text-sm">View all &rarr;</flux:link>
+                <div class="flex items-center gap-3">
+                    <flux:link :href="route('portal.projects.index')" wire:navigate class="text-sm">View all &rarr;</flux:link>
+                    <flux:modal.trigger name="start-project">
+                        <button type="button" x-data x-on:click="Livewire.dispatch('resetDiscoveryForm')" class="text-sm text-cyan-600 dark:text-cyan-400 hover:underline">+ New</button>
+                    </flux:modal.trigger>
+                </div>
             </flux:card>
 
             <flux:card class="space-y-1">
@@ -56,7 +61,9 @@
                     <flux:subheading class="max-w-sm mt-1">
                         Once your project kicks off, you'll track milestones and payments right here.
                     </flux:subheading>
-                    <flux:button :href="route('home')" class="mt-6">Back to Homepage</flux:button>
+                    <flux:modal.trigger name="start-project">
+                        <flux:button variant="primary" x-data x-on:click="Livewire.dispatch('resetDiscoveryForm')" class="mt-6">Start a New Project</flux:button>
+                    </flux:modal.trigger>
                 </div>
             @else
                 <div class="p-6 space-y-3">
@@ -83,5 +90,13 @@
                 </div>
             @endif
         </div>
+
+        <flux:modal name="start-project" class="md:w-[40rem]">
+            <div class="mb-4">
+                <flux:heading size="lg">Start a New Project</flux:heading>
+                <flux:subheading>Tell us what you have in mind and we'll follow up within 24 hours.</flux:subheading>
+            </div>
+            <livewire:project-discovery />
+        </flux:modal>
     </div>
 </x-layouts.app>

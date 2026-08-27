@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Mail\NewLeadAlert;
 use App\Models\Lead;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ProjectDiscovery extends Component
@@ -27,8 +28,18 @@ class ProjectDiscovery extends Component
     {
         $this->isProBono = request()->query('intent') === 'probono';
 
+        $this->prefillFromAuthUser();
+    }
+
+    protected function prefillFromAuthUser(): void
+    {
         if ($this->isProBono) {
             $this->budget = '0';
+        }
+
+        if (auth()->check()) {
+            $this->name = auth()->user()->name;
+            $this->email = auth()->user()->email;
         }
     }
 
@@ -49,6 +60,14 @@ class ProjectDiscovery extends Component
 
         $this->success = true;
         $this->reset(['name', 'email', 'company', 'message', 'budget']);
+    }
+
+    #[On('resetDiscoveryForm')]
+    public function resetForm(): void
+    {
+        $this->success = false;
+        $this->reset(['name', 'email', 'company', 'message', 'budget']);
+        $this->prefillFromAuthUser();
     }
 
     public function render()

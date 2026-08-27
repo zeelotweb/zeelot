@@ -5,7 +5,8 @@
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
             <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Message Received</h3>
-            <p class="text-slate-600 dark:text-slate-400">I'll review your project details and get back to you within 24 hours.</p>
+            <p class="text-slate-600 dark:text-slate-400 mb-6">I'll review your project details and get back to you within 24 hours.</p>
+            <flux:button wire:click="resetForm" variant="ghost">Send Another Message</flux:button>
         </div>
     @else
         <form wire:submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-6">
