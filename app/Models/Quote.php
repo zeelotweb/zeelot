@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Mail\InvitationMail;
+use App\Notifications\QuoteSent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -105,6 +106,8 @@ class Quote extends Model
         }
 
         $lead->update(['status' => 'quoted']);
+
+        User::where('email', $lead->email)->first()?->notify(new QuoteSent($quote));
 
         return $quote;
     }

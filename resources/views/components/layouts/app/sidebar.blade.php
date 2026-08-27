@@ -24,6 +24,10 @@
 
             <flux:spacer />
 
+            <div class="hidden lg:flex items-center justify-end px-2 mb-1">
+                <livewire:notification-bell />
+            </div>
+
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
                 <flux:profile
@@ -76,6 +80,8 @@
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
             <flux:spacer />
+
+            <livewire:notification-bell />
 
             <flux:dropdown position="top" align="end">
                 <flux:profile

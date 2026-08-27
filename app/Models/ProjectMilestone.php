@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\MilestoneInvoiced;
+use App\Notifications\MilestonePaid;
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectMilestone extends Model
@@ -42,6 +44,8 @@ class ProjectMilestone extends Model
             'status' => 'invoiced',
             'invoiced_at' => now(),
         ])->save();
+
+        $this->project->user->notify(new MilestoneInvoiced($this));
     }
 
     public function markPaid(?string $paymentIntentId = null): void
@@ -55,5 +59,7 @@ class ProjectMilestone extends Model
             'paid_at' => now(),
             'stripe_payment_intent_id' => $paymentIntentId ?? $this->stripe_payment_intent_id,
         ])->save();
+
+        $this->project->user->notify(new MilestonePaid($this));
     }
 }

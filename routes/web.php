@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
 
     Volt::route('projects', 'portal.projects.index')->name('portal.projects.index');
     Volt::route('projects/{project}', 'portal.projects.show')->name('portal.projects.show');
+    Volt::route('notifications', 'notifications.index')->name('notifications.index');
 });
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {

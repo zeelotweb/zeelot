@@ -3,6 +3,7 @@
 use App\Models\Project;
 use App\Models\ProjectMessage;
 use App\Models\ProjectMilestone;
+use App\Notifications\NewProjectMessage;
 use Livewire\Volt\Component;
 
 new class extends Component
@@ -71,11 +72,13 @@ new class extends Component
     {
         $this->validate(['newMessageBody' => 'required|min:1']);
 
-        ProjectMessage::create([
+        $message = ProjectMessage::create([
             'project_id' => $this->project->id,
             'user_id' => auth()->id(),
             'body' => $this->newMessageBody,
         ]);
+
+        $this->project->user->notify(new NewProjectMessage($message));
 
         $this->reset('newMessageBody');
     }
