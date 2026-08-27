@@ -25,14 +25,36 @@
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Full Name</label>
-                <input wire:model="name" type="text" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                <label class="flex items-center gap-1.5 text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">
+                    Full Name
+                    @auth <flux:icon.lock-closed class="size-3.5 text-slate-400" /> @endauth
+                </label>
+                <input
+                    wire:model="name"
+                    type="text"
+                    @auth readonly @endauth
+                    class="w-full border rounded-xl px-4 py-3 outline-none transition {{ auth()->check() ? 'bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500' }}"
+                >
+                @auth
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">From your account. <flux:link :href="route('profile.edit')" wire:navigate class="text-cyan-600 dark:text-cyan-400">Edit profile</flux:link> to change it.</p>
+                @endauth
                 @error('name') <span class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Email Address</label>
-                <input wire:model="email" type="email" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                <label class="flex items-center gap-1.5 text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">
+                    Email Address
+                    @auth <flux:icon.lock-closed class="size-3.5 text-slate-400" /> @endauth
+                </label>
+                <input
+                    wire:model="email"
+                    type="email"
+                    @auth readonly @endauth
+                    class="w-full border rounded-xl px-4 py-3 outline-none transition {{ auth()->check() ? 'bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500' }}"
+                >
+                @auth
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">From your account.</p>
+                @endauth
                 @error('email') <span class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
 
