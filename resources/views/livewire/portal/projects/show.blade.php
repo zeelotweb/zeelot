@@ -74,12 +74,31 @@ new class extends Component
 
 <section class="w-full space-y-8">
     <div>
-        <flux:heading size="xl">{{ $project->name }}</flux:heading>
-        <flux:subheading>
+        <flux:link :href="route('portal.projects.index')" wire:navigate class="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 mb-3">
+            <flux:icon.arrow-left class="size-4" />
+            Your Projects
+        </flux:link>
+        <div class="flex items-center gap-3 flex-wrap">
+            <flux:heading size="xl">{{ $project->name }}</flux:heading>
             @if($project->is_pro_bono)
                 <flux:badge color="cyan">Pro Bono</flux:badge>
             @endif
-        </flux:subheading>
+        </div>
+
+        @php
+            $total = $project->totalAmount();
+            $paid = $project->paidAmount();
+            $pct = $total > 0 ? min(100, round(($paid / $total) * 100)) : 0;
+        @endphp
+        <div class="max-w-sm mt-4">
+            <div class="flex items-center justify-between text-sm mb-1.5">
+                <span class="text-slate-500 dark:text-slate-400">${{ number_format($paid, 2) }} paid</span>
+                <span class="text-slate-400 dark:text-slate-500">of ${{ number_format($total, 2) }}</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full rounded-full bg-cyan-500" style="width: {{ $pct }}%"></div>
+            </div>
+        </div>
     </div>
 
     @if($checkoutStatus === 'success')
@@ -97,13 +116,13 @@ new class extends Component
 
         <div class="space-y-3">
             @forelse($this->milestones() as $milestone)
-                <flux:card class="flex items-center justify-between gap-4">
+                <div class="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-5 py-4 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition">
                     <div>
-                        <div class="font-medium">{{ $milestone->title }}</div>
+                        <div class="font-bold text-slate-900 dark:text-white">{{ $milestone->title }}</div>
                         @if($milestone->description)
-                            <div class="text-sm text-zinc-500">{{ $milestone->description }}</div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400">{{ $milestone->description }}</div>
                         @endif
-                        <div class="text-sm text-zinc-500">${{ number_format($milestone->amount, 2) }}</div>
+                        <div class="text-sm text-slate-500 dark:text-slate-400">${{ number_format($milestone->amount, 2) }}</div>
                     </div>
                     <div class="flex items-center gap-3">
                         <flux:badge :color="match($milestone->status) {
@@ -118,9 +137,11 @@ new class extends Component
                             <flux:button size="sm" variant="primary" wire:click="payMilestone({{ $milestone->id }})">Pay Now</flux:button>
                         @endif
                     </div>
-                </flux:card>
+                </div>
             @empty
-                <flux:text>No milestones yet — check back soon.</flux:text>
+                <div class="rounded-2xl border border-slate-200 dark:border-white/10 py-10 text-center">
+                    <flux:text>No milestones yet — check back soon.</flux:text>
+                </div>
             @endforelse
         </div>
     </div>
