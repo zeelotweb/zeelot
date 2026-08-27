@@ -123,7 +123,7 @@ new class extends Component
                             'reviewing' => 'amber',
                             'accepted' => 'green',
                             'declined' => 'red',
-                            'converted' => 'purple',
+                            'converted' => 'teal',
                             default => 'zinc',
                         }">{{ ucfirst($lead->status) }}</flux:badge>
                     </flux:table.cell>
@@ -168,7 +168,12 @@ new class extends Component
             @empty
                 <flux:table.row>
                     <flux:table.cell colspan="7">
-                        <flux:text class="text-center py-8">No leads yet.</flux:text>
+                        <div class="flex flex-col items-center justify-center py-12 text-center">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-2xl bg-cyan-50 dark:bg-cyan-500/10 text-cyan-500 mb-3">
+                                <flux:icon.inbox class="size-6" />
+                            </span>
+                            <flux:text>No leads match this filter.</flux:text>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse

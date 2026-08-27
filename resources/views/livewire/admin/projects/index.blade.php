@@ -54,7 +54,12 @@ new class extends Component
             @empty
                 <flux:table.row>
                     <flux:table.cell colspan="5">
-                        <flux:text class="text-center py-8">No projects yet.</flux:text>
+                        <div class="flex flex-col items-center justify-center py-12 text-center">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-2xl bg-cyan-50 dark:bg-cyan-500/10 text-cyan-500 mb-3">
+                                <flux:icon.folder class="size-6" />
+                            </span>
+                            <flux:text>No projects yet — convert an accepted lead to get started.</flux:text>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse
