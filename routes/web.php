@@ -16,6 +16,8 @@ Route::view('dashboard', 'dashboard')
 
 Route::post('/stripe/webhook', StripeWebhookController::class)->name('stripe.webhook');
 
+Volt::route('quotes/{token}', 'quotes.show')->name('quotes.show');
+
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 

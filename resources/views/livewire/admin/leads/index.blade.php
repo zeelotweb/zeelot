@@ -1,8 +1,10 @@
 <?php
 
+use App\Mail\LeadDeclinedMail;
+use App\Mail\QuoteMail;
 use App\Models\Lead;
-use App\Models\Project;
-use App\Models\User;
+use App\Models\Quote;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
 
@@ -10,8 +12,14 @@ new class extends Component
 {
     public string $statusFilter = 'all';
     public bool $proBonoOnly = false;
-    public string $conversionError = '';
-    public string $conversionSuccess = '';
+
+    public ?int $draftingForLeadId = null;
+    public array $quoteItems = [];
+    public string $quoteNote = '';
+    public int $quoteValidDays = 14;
+
+    public ?int $decliningLeadId = null;
+    public string $declineReasonInput = '';
 
     #[Computed]
     public function leads()
@@ -29,35 +37,71 @@ new class extends Component
         unset($this->leads);
     }
 
-    public function convertToProject(int $leadId)
+    public function startQuoteDraft(int $leadId): void
     {
-        $this->conversionError = '';
-        $this->conversionSuccess = '';
+        $this->draftingForLeadId = $leadId;
+        $this->quoteItems = [['title' => '', 'description' => '', 'amount' => '']];
+        $this->quoteNote = '';
+        $this->quoteValidDays = 14;
+    }
 
-        $lead = Lead::findOrFail($leadId);
+    public function cancelQuoteDraft(): void
+    {
+        $this->draftingForLeadId = null;
+        $this->quoteItems = [];
+    }
 
-        $user = User::where('email', $lead->email)->first();
+    public function addQuoteItem(): void
+    {
+        $this->quoteItems[] = ['title' => '', 'description' => '', 'amount' => ''];
+    }
 
-        if (! $user) {
-            $this->conversionError = "No account exists yet for {$lead->email}. Ask the customer to register at /register first, then convert again.";
+    public function removeQuoteItem(int $index): void
+    {
+        unset($this->quoteItems[$index]);
+        $this->quoteItems = array_values($this->quoteItems);
+    }
 
-            return;
-        }
-
-        $project = Project::create([
-            'user_id' => $user->id,
-            'lead_id' => $lead->id,
-            'name' => ($lead->company ?: $lead->name).' — Project',
-            'status' => 'active',
-            'is_pro_bono' => $lead->is_pro_bono,
+    public function sendQuote(): void
+    {
+        $this->validate([
+            'quoteItems' => 'required|array|min:1',
+            'quoteItems.*.title' => 'required|string|min:2',
+            'quoteItems.*.amount' => 'required|numeric|min:0',
+            'quoteValidDays' => 'required|integer|min:1',
         ]);
 
-        $lead->update([
-            'status' => 'converted',
-            'converted_to_project_id' => $project->id,
-        ]);
+        $lead = Lead::findOrFail($this->draftingForLeadId);
 
-        $this->redirect(route('admin.projects.show', $project), navigate: true);
+        $quote = Quote::createFor($lead, $this->quoteItems, auth()->user(), $this->quoteValidDays, $this->quoteNote ?: null);
+
+        Mail::to($lead->email)->send(new QuoteMail($quote));
+
+        $this->draftingForLeadId = null;
+        $this->quoteItems = [];
+        unset($this->leads);
+    }
+
+    public function startDecline(int $leadId): void
+    {
+        $this->decliningLeadId = $leadId;
+        $this->declineReasonInput = '';
+    }
+
+    public function cancelDecline(): void
+    {
+        $this->decliningLeadId = null;
+    }
+
+    public function confirmDecline(): void
+    {
+        $lead = Lead::findOrFail($this->decliningLeadId);
+        $lead->decline($this->declineReasonInput ?: null);
+
+        Mail::to($lead->email)->send(new LeadDeclinedMail($lead));
+
+        $this->decliningLeadId = null;
+        unset($this->leads);
     }
 }; ?>
 
@@ -69,18 +113,12 @@ new class extends Component
         </div>
     </div>
 
-    @if($conversionError)
-        <flux:callout variant="danger" class="mb-6" icon="exclamation-triangle" heading="Couldn't convert lead">
-            {{ $conversionError }}
-        </flux:callout>
-    @endif
-
     <div class="flex flex-wrap items-center gap-4 mb-6">
         <flux:select wire:model.live="statusFilter" class="max-w-xs">
             <flux:select.option value="all">All statuses</flux:select.option>
             <flux:select.option value="new">New</flux:select.option>
             <flux:select.option value="reviewing">Reviewing</flux:select.option>
-            <flux:select.option value="accepted">Accepted</flux:select.option>
+            <flux:select.option value="quoted">Quoted</flux:select.option>
             <flux:select.option value="declined">Declined</flux:select.option>
             <flux:select.option value="converted">Converted</flux:select.option>
         </flux:select>
@@ -101,6 +139,7 @@ new class extends Component
 
         <flux:table.rows>
             @forelse($this->leads as $lead)
+                @php $quote = $lead->currentQuote(); @endphp
                 <flux:table.row wire:key="lead-{{ $lead->id }}">
                     <flux:table.cell>
                         <div class="font-medium">{{ $lead->name }}</div>
@@ -121,7 +160,7 @@ new class extends Component
                         <flux:badge :color="match($lead->status) {
                             'new' => 'blue',
                             'reviewing' => 'amber',
-                            'accepted' => 'green',
+                            'quoted' => 'cyan',
                             'declined' => 'red',
                             'converted' => 'teal',
                             default => 'zinc',
@@ -135,7 +174,7 @@ new class extends Component
                     </flux:table.cell>
                 </flux:table.row>
 
-                <flux:modal name="lead-{{ $lead->id }}" class="md:w-[32rem]">
+                <flux:modal name="lead-{{ $lead->id }}" class="md:w-[36rem]">
                     <div class="space-y-6">
                         <div>
                             <flux:heading size="lg">{{ $lead->name }}</flux:heading>
@@ -148,20 +187,85 @@ new class extends Component
 
                         <flux:text>{{ $lead->message }}</flux:text>
 
-                        <div class="flex flex-wrap gap-2">
-                            <flux:button size="sm" wire:click="updateStatus({{ $lead->id }}, 'reviewing')">Mark Reviewing</flux:button>
-                            <flux:button size="sm" wire:click="updateStatus({{ $lead->id }}, 'accepted')" variant="primary">Mark Accepted</flux:button>
-                            <flux:button size="sm" wire:click="updateStatus({{ $lead->id }}, 'declined')" variant="danger">Decline</flux:button>
-                        </div>
+                        @if($lead->status === 'declined' && $lead->decline_reason)
+                            <flux:callout variant="secondary" icon="x-circle" heading="Declined">
+                                {{ $lead->decline_reason }}
+                            </flux:callout>
+                        @endif
 
-                        @if($lead->status === 'accepted' && ! $lead->converted_to_project_id)
-                            <flux:button wire:click="convertToProject({{ $lead->id }})" variant="primary" class="w-full">
-                                Convert to Project
-                            </flux:button>
-                        @elseif($lead->converted_to_project_id)
+                        {{-- Quote summary, once one exists --}}
+                        @if($quote)
+                            <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <flux:heading size="sm">Quote &mdash; ${{ number_format($quote->total(), 2) }}</flux:heading>
+                                    <flux:badge :color="match($quote->status) {
+                                        'accepted' => 'green',
+                                        'declined' => 'red',
+                                        default => $quote->isExpired() ? 'zinc' : 'amber',
+                                    }">{{ $quote->isExpired() && $quote->status === 'sent' ? 'Expired' : ucfirst($quote->status) }}</flux:badge>
+                                </div>
+                                <div class="text-sm text-zinc-500">
+                                    Sent {{ $quote->sent_at?->diffForHumans() }}
+                                    @if($quote->status === 'accepted' && $quote->signature_name)
+                                        &middot; Signed by {{ $quote->signature_name }}
+                                    @endif
+                                    @if($quote->status === 'declined' && $quote->decline_reason)
+                                        &middot; "{{ $quote->decline_reason }}"
+                                    @endif
+                                </div>
+                                <flux:link :href="url('/quotes/'.$quote->token)" target="_blank" class="text-sm">View quote page &rarr;</flux:link>
+                            </div>
+                        @endif
+
+                        @if($lead->converted_to_project_id)
                             <flux:button :href="route('admin.projects.show', $lead->converted_to_project_id)" wire:navigate class="w-full">
                                 View Project
                             </flux:button>
+                        @elseif(in_array($lead->status, ['new', 'reviewing']))
+                            @if($draftingForLeadId === $lead->id)
+                                {{-- Quote drafting form --}}
+                                <div class="space-y-4 border-t border-zinc-200 dark:border-zinc-700 pt-4">
+                                    <flux:heading size="sm">Draft Quote</flux:heading>
+
+                                    @foreach($quoteItems as $i => $item)
+                                        <div class="flex gap-2 items-start">
+                                            <div class="flex-1 space-y-2">
+                                                <flux:input placeholder="Line item title" wire:model="quoteItems.{{ $i }}.title" />
+                                                <flux:input placeholder="Amount (USD)" type="number" step="0.01" wire:model="quoteItems.{{ $i }}.amount" />
+                                            </div>
+                                            @if(count($quoteItems) > 1)
+                                                <flux:button size="sm" variant="ghost" icon="trash" wire:click="removeQuoteItem({{ $i }})" />
+                                            @endif
+                                        </div>
+                                    @endforeach
+
+                                    <flux:button size="sm" variant="ghost" wire:click="addQuoteItem">+ Add line item</flux:button>
+
+                                    <flux:input label="Valid for (days)" type="number" wire:model="quoteValidDays" />
+                                    <flux:textarea label="Note to customer (optional)" wire:model="quoteNote" rows="2" />
+
+                                    <div class="flex gap-2">
+                                        <flux:button wire:click="sendQuote" variant="primary" class="flex-1">Send Quote</flux:button>
+                                        <flux:button wire:click="cancelQuoteDraft" variant="ghost">Cancel</flux:button>
+                                    </div>
+                                </div>
+                            @elseif($decliningLeadId === $lead->id)
+                                <div class="space-y-3 border-t border-zinc-200 dark:border-zinc-700 pt-4">
+                                    <flux:textarea label="Reason (optional, included in the email to them)" wire:model="declineReasonInput" rows="2" />
+                                    <div class="flex gap-2">
+                                        <flux:button wire:click="confirmDecline" variant="danger" class="flex-1">Confirm Decline</flux:button>
+                                        <flux:button wire:click="cancelDecline" variant="ghost">Back</flux:button>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex flex-wrap gap-2">
+                                    @if($lead->status === 'new')
+                                        <flux:button size="sm" wire:click="updateStatus({{ $lead->id }}, 'reviewing')">Mark Reviewing</flux:button>
+                                    @endif
+                                    <flux:button size="sm" variant="primary" wire:click="startQuoteDraft({{ $lead->id }})">Draft Quote</flux:button>
+                                    <flux:button size="sm" variant="danger" wire:click="startDecline({{ $lead->id }})">Decline</flux:button>
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </flux:modal>

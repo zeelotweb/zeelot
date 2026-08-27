@@ -6,12 +6,12 @@
         <x-auth-session-status class="text-center" :status="session('status')" />
 
         @if (! config('app.registration_open') && ! $invitation)
-            <flux:callout variant="warning" icon="lock-closed" heading="{{ __('Invite-only') }}">
+            <flux:callout variant="warning" icon="lock-closed" :heading="__('Invite-only')">
                 {{ __('Registration currently requires an invitation link. Ask your ZeelotWeb contact to send you one.') }}
             </flux:callout>
         @else
             @if ($invitation)
-                <flux:callout variant="secondary" icon="envelope" heading="{{ __('You\'re invited') }}">
+                <flux:callout variant="secondary" icon="envelope" :heading="__('You\'re invited')">
                     {{ __('Joining as :role.', ['role' => ucfirst(str_replace('_', ' ', $invitation->role))]) }}
                 </flux:callout>
             @endif

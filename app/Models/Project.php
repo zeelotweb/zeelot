@@ -9,6 +9,7 @@ class Project extends Model
     protected $fillable = [
         'user_id',
         'lead_id',
+        'quote_id',
         'name',
         'description',
         'status',
@@ -36,6 +37,14 @@ class Project extends Model
     public function lead()
     {
         return $this->belongsTo(Lead::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Quote, $this>
+     */
+    public function quote()
+    {
+        return $this->belongsTo(Quote::class);
     }
 
     /**

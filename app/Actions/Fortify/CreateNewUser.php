@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\Invitation;
+use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -48,6 +49,11 @@ class CreateNewUser implements CreatesNewUsers
         ]);
 
         $invitation?->update(['accepted_at' => now()]);
+
+        Lead::where('email', $user->email)
+            ->where('status', 'quoted')
+            ->get()
+            ->each(fn (Lead $lead) => $lead->acceptedQuote()?->convertToProject());
 
         return $user;
     }
