@@ -33,7 +33,7 @@
 
             <flux:card class="space-y-1">
                 <span class="text-xs font-mono uppercase tracking-widest text-slate-400 dark:text-slate-500">Account</span>
-                <div class="text-3xl font-black text-slate-900 dark:text-white">{{ ucfirst(auth()->user()->role) }}</div>
+                <div class="text-3xl font-black text-slate-900 dark:text-white">{{ ucwords(str_replace('_', ' ', auth()->user()->role)) }}</div>
                 <flux:link :href="route('profile.edit')" wire:navigate class="text-sm">Edit profile &rarr;</flux:link>
             </flux:card>
 
