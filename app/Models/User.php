@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'role',
         'google_id',
+        'can_issue_discounts',
     ];
 
     /**
@@ -49,6 +50,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'can_issue_discounts' => 'boolean',
         ];
     }
 
@@ -83,6 +85,14 @@ class User extends Authenticatable
     public function isStaff(): bool
     {
         return in_array($this->role, ['staff', 'admin', 'super_admin'], true);
+    }
+
+    /**
+     * Super admin can always issue discount codes; admins need the flag.
+     */
+    public function canIssueDiscounts(): bool
+    {
+        return $this->isSuperAdmin() || ($this->isAdmin() && $this->can_issue_discounts);
     }
 
     /**

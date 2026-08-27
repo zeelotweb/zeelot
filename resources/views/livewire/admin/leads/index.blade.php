@@ -39,10 +39,31 @@ new class extends Component
 
     public function startQuoteDraft(int $leadId): void
     {
+        $lead = Lead::with('packages')->findOrFail($leadId);
+
         $this->draftingForLeadId = $leadId;
-        $this->quoteItems = [['title' => '', 'description' => '', 'amount' => '']];
         $this->quoteNote = '';
         $this->quoteValidDays = 14;
+
+        if ($lead->packages->isEmpty()) {
+            $this->quoteItems = [['title' => '', 'description' => '', 'amount' => '']];
+
+            return;
+        }
+
+        $this->quoteItems = $lead->packages->map(fn ($package) => [
+            'title' => $package->name,
+            'description' => $package->description,
+            'amount' => (string) $package->price,
+        ])->all();
+
+        if ($lead->discount_amount > 0) {
+            $this->quoteItems[] = [
+                'title' => 'Discount'.($lead->discountCode ? ' ('.$lead->discountCode->code.')' : ''),
+                'description' => null,
+                'amount' => (string) (-1 * (float) $lead->discount_amount),
+            ];
+        }
     }
 
     public function cancelQuoteDraft(): void

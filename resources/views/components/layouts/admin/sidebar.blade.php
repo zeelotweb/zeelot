@@ -22,6 +22,8 @@
                     <flux:navlist.item icon="folder" :href="route('admin.projects.index')" :current="request()->routeIs('admin.projects.*')" wire:navigate>{{ __('Projects') }}</flux:navlist.item>
 
                     @if(auth()->user()?->isAdmin())
+                        <flux:navlist.item icon="squares-2x2" :href="route('admin.packages.index')" :current="request()->routeIs('admin.packages.*')" wire:navigate>{{ __('Packages') }}</flux:navlist.item>
+                        <flux:navlist.item icon="ticket" :href="route('admin.discounts.index')" :current="request()->routeIs('admin.discounts.*')" wire:navigate>{{ __('Discounts') }}</flux:navlist.item>
                         <flux:navlist.item icon="users" :href="route('admin.team.index')" :current="request()->routeIs('admin.team.*')" wire:navigate>{{ __('Team') }}</flux:navlist.item>
                     @endif
                 </flux:navlist.group>

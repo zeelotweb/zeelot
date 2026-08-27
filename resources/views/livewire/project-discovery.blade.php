@@ -65,13 +65,55 @@
                 </div>
             @else
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Project Budget (Starting at)</label>
-                    <select wire:model="budget" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none transition">
-                        <option value="1500">$1,500 - $3,000</option>
-                        <option value="5000">$5,000 - $10,000</option>
-                        <option value="10000">$10,000+</option>
-                    </select>
+                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Select the solutions you need — mix and match</label>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        @foreach($this->packages() as $package)
+                            <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition {{ in_array($package->id, $selectedPackageIds) ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600' }}">
+                                <input type="checkbox" wire:model.live="selectedPackageIds" value="{{ $package->id }}" class="mt-1 accent-cyan-500">
+                                <div>
+                                    <div class="font-semibold text-slate-900 dark:text-white">{{ $package->name }}</div>
+                                    @if($package->description)
+                                        <div class="text-sm text-slate-500 dark:text-slate-400">{{ $package->description }}</div>
+                                    @endif
+                                    <div class="text-sm font-mono text-cyan-600 dark:text-cyan-400 mt-1">${{ number_format($package->price, 0) }}</div>
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('selectedPackageIds') <span class="text-red-500 dark:text-red-400 text-xs mt-2 block">{{ $message }}</span> @enderror
                 </div>
+
+                @if(count($selectedPackageIds) > 0)
+                    <div class="md:col-span-2 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-5 space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500 dark:text-slate-400">Subtotal</span>
+                            <span class="font-mono text-slate-900 dark:text-white">${{ number_format($this->subtotal(), 2) }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-cyan-600 dark:text-cyan-400">
+                            <span>Default discount ({{ config('discounts.default_percentage') }}%)</span>
+                            <span class="font-mono">-${{ number_format($this->defaultDiscountAmount(), 2) }}</span>
+                        </div>
+
+                        <div class="flex gap-2 pt-1">
+                            <input wire:model="discountCodeInput" type="text" placeholder="Discount code (optional)" class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm uppercase text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cyan-500">
+                            <flux:button size="sm" type="button" wire:click="applyDiscountCode">Apply</flux:button>
+                        </div>
+                        @if($discountError)
+                            <p class="text-red-500 dark:text-red-400 text-xs">{{ $discountError }}</p>
+                        @endif
+                        @if($appliedDiscount)
+                            <div class="flex justify-between text-sm text-cyan-600 dark:text-cyan-400">
+                                <span>Code applied</span>
+                                <span class="font-mono">-${{ number_format($this->codeDiscountAmount(), 2) }}</span>
+                            </div>
+                        @endif
+
+                        <div class="flex justify-between text-base font-bold pt-3 border-t border-slate-200 dark:border-slate-700">
+                            <span class="text-slate-900 dark:text-white">Total</span>
+                            <span class="font-mono text-cyan-600 dark:text-cyan-400">${{ number_format($this->total(), 2) }}</span>
+                        </div>
+                    </div>
+                @endif
             @endif
 
             <div class="md:col-span-2">

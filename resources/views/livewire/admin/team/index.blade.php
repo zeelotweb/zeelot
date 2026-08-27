@@ -3,6 +3,7 @@
 use App\Mail\InvitationMail;
 use App\Models\Invitation;
 use App\Models\User;
+use App\Notifications\RoleChanged;
 use App\Notifications\StaffInviteReceived;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Volt\Component;
@@ -102,7 +103,23 @@ new class extends Component
             abort(403);
         }
 
+        $oldRole = $target->role;
         $target->update(['role' => $newRole]);
+
+        if ($oldRole !== $newRole) {
+            $target->notify(new RoleChanged($oldRole, $newRole, auth()->user()->name));
+        }
+    }
+
+    public function toggleDiscountPermission(int $userId): void
+    {
+        abort_unless(auth()->user()->isSuperAdmin(), 403);
+
+        $target = User::findOrFail($userId);
+
+        abort_unless($target->role === 'admin', 403);
+
+        $target->update(['can_issue_discounts' => ! $target->can_issue_discounts]);
     }
 }; ?>
 
@@ -186,6 +203,9 @@ new class extends Component
             <flux:table.column>Name</flux:table.column>
             <flux:table.column>Email</flux:table.column>
             <flux:table.column>Role</flux:table.column>
+            @if (auth()->user()->isSuperAdmin())
+                <flux:table.column>Discounts</flux:table.column>
+            @endif
             <flux:table.column>Actions</flux:table.column>
         </flux:table.columns>
 
@@ -202,6 +222,17 @@ new class extends Component
                             default => 'zinc',
                         }">{{ ucfirst(str_replace('_', ' ', $member->role)) }}</flux:badge>
                     </flux:table.cell>
+                    @if (auth()->user()->isSuperAdmin())
+                        <flux:table.cell>
+                            @if ($member->role === 'admin')
+                                <button type="button" wire:click="toggleDiscountPermission({{ $member->id }})">
+                                    <flux:badge :color="$member->can_issue_discounts ? 'green' : 'zinc'">{{ $member->can_issue_discounts ? 'Can issue' : 'No access' }}</flux:badge>
+                                </button>
+                            @else
+                                <flux:text class="text-zinc-400">—</flux:text>
+                            @endif
+                        </flux:table.cell>
+                    @endif
                     <flux:table.cell>
                         @if ($member->isSuperAdmin())
                             <flux:text class="text-zinc-400">Permanent</flux:text>

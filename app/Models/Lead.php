@@ -18,6 +18,8 @@ class Lead extends Model
         'decline_reason',
         'is_pro_bono',
         'converted_to_project_id',
+        'discount_code_id',
+        'discount_amount',
     ];
 
     public function decline(?string $reason = null): void
@@ -34,6 +36,7 @@ class Lead extends Model
     {
         return [
             'is_pro_bono' => 'boolean',
+            'discount_amount' => 'decimal:2',
         ];
     }
 
@@ -43,6 +46,32 @@ class Lead extends Model
     public function project()
     {
         return $this->belongsTo(Project::class, 'converted_to_project_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Package, $this>
+     */
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<DiscountCode, $this>
+     */
+    public function discountCode()
+    {
+        return $this->belongsTo(DiscountCode::class);
+    }
+
+    public function packagesSubtotal(): float
+    {
+        return (float) $this->packages()->sum('price');
+    }
+
+    public function total(): float
+    {
+        return max(0, $this->packagesSubtotal() - (float) ($this->discount_amount ?? 0));
     }
 
     /**
