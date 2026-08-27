@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Invitation;
+use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
 
@@ -11,6 +12,12 @@ new class extends Component
     public function notifications()
     {
         return auth()->user()->notifications()->latest()->paginate(20);
+    }
+
+    #[On('notifications-updated')]
+    public function refresh(): void
+    {
+        //
     }
 
     public function open(string $id)

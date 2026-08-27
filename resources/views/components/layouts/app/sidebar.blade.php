@@ -129,6 +129,17 @@
 
         {{ $slot }}
 
+        @auth
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    window.Echo.private('App.Models.User.{{ auth()->id() }}')
+                        .notification(() => {
+                            Livewire.dispatch('notifications-updated');
+                        });
+                });
+            </script>
+        @endauth
+
         @fluxScripts
     </body>
 </html>
