@@ -57,9 +57,15 @@
                     <flux:icon.moon variant="micro" class="size-4 hidden dark:block" />
                 </button>
                 <div class="hidden md:flex items-center gap-3">
-                    <a href="{{ route('login') }}" class="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
-                        Customer Login
-                    </a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
+                            Customer Login
+                        </a>
+                    @endauth
                     <a href="#contact-wrap" class="bg-cyan-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] transition-all">
                         Start a Project
                     </a>
@@ -69,9 +75,15 @@
 
         <!-- Mobile-only actions row -->
         <div class="flex md:hidden items-center gap-3 mt-3 pt-3 border-t border-slate-100 dark:border-white/5">
-            <a href="{{ route('login') }}" class="flex-1 text-center text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition py-2">
-                Customer Login
-            </a>
+            @auth
+                <a href="{{ route('dashboard') }}" class="flex-1 text-center text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition py-2">
+                    Dashboard
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="flex-1 text-center text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition py-2">
+                    Customer Login
+                </a>
+            @endauth
             <a href="#contact-wrap" class="flex-1 text-center bg-cyan-500 text-white px-4 py-2.5 rounded-lg font-semibold text-sm hover:bg-cyan-400 transition-all">
                 Start a Project
             </a>

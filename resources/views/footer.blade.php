@@ -38,7 +38,11 @@
                         <a href="#contact-wrap" class="hover:text-slate-900 dark:hover:text-white transition underline decoration-cyan-500 underline-offset-4">Start a Project</a>
                     </li>
                     <li><a href="mailto:hello@zeelotweb.com" class="hover:text-slate-900 dark:hover:text-white transition">hello@zeelotweb.com</a></li>
-                    <li><a href="{{ route('login') }}" class="hover:text-slate-900 dark:hover:text-white transition">Customer Login</a></li>
+                    @auth
+                        <li><a href="{{ route('dashboard') }}" class="hover:text-slate-900 dark:hover:text-white transition">Dashboard</a></li>
+                    @else
+                        <li><a href="{{ route('login') }}" class="hover:text-slate-900 dark:hover:text-white transition">Customer Login</a></li>
+                    @endauth
                 </ul>
             </div>
         </div>
