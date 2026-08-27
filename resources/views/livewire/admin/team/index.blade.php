@@ -44,6 +44,45 @@ new class extends Component
         session()->flash('status', "Invitation sent to {$this->inviteEmail}.");
     }
 
+    public function pendingInvitations()
+    {
+        return Invitation::whereNull('accepted_at')
+            ->with('invitedBy')
+            ->latest()
+            ->get();
+    }
+
+    public function canManageInvite(Invitation $invitation): bool
+    {
+        return auth()->user()->isSuperAdmin()
+            || $invitation->invited_by_id === auth()->id()
+            || (auth()->user()->isAdmin() && $invitation->role === 'staff');
+    }
+
+    public function revokeInvite(int $id): void
+    {
+        $invitation = Invitation::findOrFail($id);
+
+        abort_unless($this->canManageInvite($invitation), 403);
+
+        $invitation->delete();
+
+        session()->flash('status', "Invitation to {$invitation->email} revoked.");
+    }
+
+    public function resendInvite(int $id): void
+    {
+        $invitation = Invitation::findOrFail($id);
+
+        abort_unless($this->canManageInvite($invitation), 403);
+
+        $invitation->update(['expires_at' => now()->addDays(7)]);
+
+        Mail::to($invitation->email)->send(new InvitationMail($invitation));
+
+        session()->flash('status', "Invitation resent to {$invitation->email}.");
+    }
+
     public function changeRole(int $userId, string $newRole): void
     {
         $target = User::findOrFail($userId);
@@ -81,6 +120,58 @@ new class extends Component
             <flux:button type="submit" variant="primary">Send Invite</flux:button>
         </form>
     </flux:card>
+
+    @if ($this->pendingInvitations()->isNotEmpty())
+        <div>
+            <flux:heading size="lg" class="mb-4">Pending Invitations</flux:heading>
+
+            <flux:table>
+                <flux:table.columns>
+                    <flux:table.column>Email</flux:table.column>
+                    <flux:table.column>Role</flux:table.column>
+                    <flux:table.column>Invited By</flux:table.column>
+                    <flux:table.column>Sent</flux:table.column>
+                    <flux:table.column>Status</flux:table.column>
+                    <flux:table.column>Actions</flux:table.column>
+                </flux:table.columns>
+
+                <flux:table.rows>
+                    @foreach ($this->pendingInvitations() as $invitation)
+                        @php $expired = $invitation->expires_at && $invitation->expires_at->isPast(); @endphp
+                        <flux:table.row wire:key="invite-{{ $invitation->id }}">
+                            <flux:table.cell>{{ $invitation->email }}</flux:table.cell>
+                            <flux:table.cell>
+                                <flux:badge :color="match($invitation->role) {
+                                    'admin' => 'blue',
+                                    'staff' => 'zinc',
+                                    default => 'zinc',
+                                }">{{ ucfirst($invitation->role) }}</flux:badge>
+                            </flux:table.cell>
+                            <flux:table.cell>{{ $invitation->invitedBy?->name ?? '—' }}</flux:table.cell>
+                            <flux:table.cell>{{ $invitation->created_at->diffForHumans() }}</flux:table.cell>
+                            <flux:table.cell>
+                                @if ($expired)
+                                    <flux:badge color="red">Expired</flux:badge>
+                                @else
+                                    <flux:badge color="amber">Pending</flux:badge>
+                                @endif
+                            </flux:table.cell>
+                            <flux:table.cell>
+                                @if ($this->canManageInvite($invitation))
+                                    <div class="flex gap-2">
+                                        <flux:button size="sm" wire:click="resendInvite({{ $invitation->id }})">Resend</flux:button>
+                                        <flux:button size="sm" variant="danger" wire:click="revokeInvite({{ $invitation->id }})">Revoke</flux:button>
+                                    </div>
+                                @else
+                                    <flux:text class="text-zinc-400">—</flux:text>
+                                @endif
+                            </flux:table.cell>
+                        </flux:table.row>
+                    @endforeach
+                </flux:table.rows>
+            </flux:table>
+        </div>
+    @endif
 
     <flux:table>
         <flux:table.columns>
