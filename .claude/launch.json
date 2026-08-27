@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "zeelotweb-dev",
+      "name": "zeelot-dev",
       "url": "http://127.0.0.1:8000",
       "port": 8000
     }
