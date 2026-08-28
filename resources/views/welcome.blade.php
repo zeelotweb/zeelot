@@ -28,6 +28,9 @@
                     linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
                     linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
             }
+            @media (prefers-reduced-motion: reduce) {
+                .animate-ping { animation: none; }
+            }
         </style>
     </head>
     <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-white antialiased font-sans">
@@ -122,14 +125,27 @@
 </header>
 
 <!-- Trusted By Section -->
-<section class="py-16 bg-slate-50 dark:bg-slate-900/30 border-y border-slate-100 dark:border-white/5 overflow-hidden">
-    <div class="container mx-auto px-6">
-        <p class="text-center text-xs font-mono font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-10">
-            Trusted by teams building the next big thing
-        </p>
+<section class="relative py-20 bg-slate-50 dark:bg-slate-900/30 border-y border-slate-100 dark:border-white/5 overflow-hidden grid-pattern">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] rounded-full bg-cyan-300/10 dark:bg-cyan-600/10 blur-[120px] pointer-events-none"></div>
+
+    <div class="relative container mx-auto px-6">
+        <div class="flex items-center justify-center gap-4 mb-12">
+            <span class="h-px w-10 sm:w-20 bg-gradient-to-r from-transparent to-slate-300 dark:to-white/20"></span>
+            <p class="shrink-0 text-center text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.25em]">
+                Trusted by teams building the next big thing
+            </p>
+            <span class="h-px w-10 sm:w-20 bg-gradient-to-l from-transparent to-slate-300 dark:to-white/20"></span>
+        </div>
 
         <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-4 sm:gap-6">
-            <a href="https://ValueAfrik.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+            <a href="https://ValueAfrik.com" target="_blank" class="group relative flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+                <span class="absolute -top-2.5 right-4 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-[10px] font-mono font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    <span class="relative flex size-1.5">
+                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex size-1.5 rounded-full bg-emerald-500"></span>
+                    </span>
+                    Live
+                </span>
                 <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
                     <img src="{{ asset('valueafrik.jpeg') }}" alt="ValueAfrik" class="h-12 w-12 object-contain">
                 </span>
@@ -139,7 +155,14 @@
                 </span>
             </a>
 
-            <a href="https://Tiecnoc.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:-rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+            <a href="https://Tiecnoc.com" target="_blank" class="group relative flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:-rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+                <span class="absolute -top-2.5 right-4 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-[10px] font-mono font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    <span class="relative flex size-1.5">
+                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex size-1.5 rounded-full bg-emerald-500"></span>
+                    </span>
+                    Live
+                </span>
                 <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
                     <img src="{{ asset('tiecnoc.png') }}" alt="Tiecnoc" class="h-12 w-12 object-contain">
                 </span>
@@ -149,7 +172,14 @@
                 </span>
             </a>
 
-            <a href="https://Taongaf.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+            <a href="https://Taongaf.com" target="_blank" class="group relative flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+                <span class="absolute -top-2.5 right-4 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-[10px] font-mono font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    <span class="relative flex size-1.5">
+                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex size-1.5 rounded-full bg-emerald-500"></span>
+                    </span>
+                    Live
+                </span>
                 <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
                     <img src="{{ asset('taongaf.png') }}" alt="Taongaf" class="h-16 w-16 object-contain">
                 </span>
