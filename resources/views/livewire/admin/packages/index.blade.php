@@ -16,7 +16,17 @@ new class extends Component
 
     public function mount(): void
     {
-        abort_unless(auth()->user()->isAdmin(), 403);
+        $this->ensureAdmin();
+    }
+
+    /**
+     * Livewire only calls mount() on the initial page load — every action
+     * call afterward hydrates straight from the signed snapshot, skipping
+     * it entirely. Each mutating method below re-checks for that reason.
+     */
+    protected function ensureAdmin(): void
+    {
+        abort_unless(auth()->user()?->isAdmin(), 403);
     }
 
     public function categoryOptions(): array
@@ -38,6 +48,8 @@ new class extends Component
 
     public function startCreate(): void
     {
+        $this->ensureAdmin();
+
         $this->reset(['editingId', 'name', 'description', 'price', 'featuresText', 'sortOrder']);
         $this->category = 'static';
         $this->isActive = true;
@@ -46,6 +58,8 @@ new class extends Component
 
     public function startEdit(int $id): void
     {
+        $this->ensureAdmin();
+
         $package = Package::findOrFail($id);
 
         $this->editingId = $package->id;
@@ -62,6 +76,8 @@ new class extends Component
 
     public function save(): void
     {
+        $this->ensureAdmin();
+
         $this->validate([
             'name' => 'required|min:2',
             'category' => 'required|in:'.implode(',', array_keys($this->categoryOptions())),
@@ -97,12 +113,16 @@ new class extends Component
 
     public function toggleActive(int $id): void
     {
+        $this->ensureAdmin();
+
         $package = Package::findOrFail($id);
         $package->update(['is_active' => ! $package->is_active]);
     }
 
     public function delete(int $id): void
     {
+        $this->ensureAdmin();
+
         Package::whereKey($id)->delete();
         session()->flash('status', 'Package deleted.');
     }

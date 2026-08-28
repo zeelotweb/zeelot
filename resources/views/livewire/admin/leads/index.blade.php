@@ -21,6 +21,21 @@ new class extends Component
     public ?int $decliningLeadId = null;
     public string $declineReasonInput = '';
 
+    public function mount(): void
+    {
+        $this->ensureStaff();
+    }
+
+    /**
+     * Livewire only calls mount() on the initial page load — every action
+     * call afterward hydrates straight from the signed snapshot, skipping
+     * it entirely. Each mutating method below re-checks for that reason.
+     */
+    protected function ensureStaff(): void
+    {
+        abort_unless(auth()->user()?->isStaff(), 403);
+    }
+
     #[Computed]
     public function leads()
     {
@@ -33,12 +48,16 @@ new class extends Component
 
     public function updateStatus(int $leadId, string $status): void
     {
+        $this->ensureStaff();
+
         Lead::whereKey($leadId)->update(['status' => $status]);
         unset($this->leads);
     }
 
     public function startQuoteDraft(int $leadId): void
     {
+        $this->ensureStaff();
+
         $lead = Lead::with('packages')->findOrFail($leadId);
 
         $this->draftingForLeadId = $leadId;
@@ -68,23 +87,31 @@ new class extends Component
 
     public function cancelQuoteDraft(): void
     {
+        $this->ensureStaff();
+
         $this->draftingForLeadId = null;
         $this->quoteItems = [];
     }
 
     public function addQuoteItem(): void
     {
+        $this->ensureStaff();
+
         $this->quoteItems[] = ['title' => '', 'description' => '', 'amount' => ''];
     }
 
     public function removeQuoteItem(int $index): void
     {
+        $this->ensureStaff();
+
         unset($this->quoteItems[$index]);
         $this->quoteItems = array_values($this->quoteItems);
     }
 
     public function sendQuote(): void
     {
+        $this->ensureStaff();
+
         $this->validate([
             'quoteItems' => 'required|array|min:1',
             'quoteItems.*.title' => 'required|string|min:2',
@@ -105,17 +132,23 @@ new class extends Component
 
     public function startDecline(int $leadId): void
     {
+        $this->ensureStaff();
+
         $this->decliningLeadId = $leadId;
         $this->declineReasonInput = '';
     }
 
     public function cancelDecline(): void
     {
+        $this->ensureStaff();
+
         $this->decliningLeadId = null;
     }
 
     public function confirmDecline(): void
     {
+        $this->ensureStaff();
+
         $lead = Lead::findOrFail($this->decliningLeadId);
         $lead->decline($this->declineReasonInput ?: null);
 

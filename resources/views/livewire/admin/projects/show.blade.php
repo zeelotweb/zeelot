@@ -18,7 +18,19 @@ new class extends Component
 
     public function mount(Project $project): void
     {
+        $this->ensureStaff();
+
         $this->project = $project;
+    }
+
+    /**
+     * Livewire only calls mount() on the initial page load — every action
+     * call afterward hydrates straight from the signed snapshot, skipping
+     * it entirely. Each mutating method below re-checks for that reason.
+     */
+    protected function ensureStaff(): void
+    {
+        abort_unless(auth()->user()?->isStaff(), 403);
     }
 
     public function milestones()
@@ -33,6 +45,8 @@ new class extends Component
 
     public function addMilestone(): void
     {
+        $this->ensureStaff();
+
         $this->validate([
             'newMilestoneTitle' => 'required|min:2',
             'newMilestoneAmount' => 'required|numeric|min:0',
@@ -52,6 +66,8 @@ new class extends Component
 
     public function markInvoiced(int $milestoneId): void
     {
+        $this->ensureStaff();
+
         $milestone = ProjectMilestone::findOrFail($milestoneId);
 
         if ($milestone->project_id === $this->project->id) {
@@ -61,6 +77,8 @@ new class extends Component
 
     public function markPaidManually(int $milestoneId): void
     {
+        $this->ensureStaff();
+
         $milestone = ProjectMilestone::findOrFail($milestoneId);
 
         if ($milestone->project_id === $this->project->id) {
@@ -70,6 +88,8 @@ new class extends Component
 
     public function sendMessage(): void
     {
+        $this->ensureStaff();
+
         $this->validate(['newMessageBody' => 'required|min:1']);
 
         $message = ProjectMessage::create([

@@ -15,8 +15,20 @@ new class extends Component
         $this->quote = Quote::with(['lineItems', 'lead'])->where('token', $token)->firstOrFail();
     }
 
+    /**
+     * Staff can open this page (e.g. from the "View quote page" link in the
+     * Leads Inbox) to see exactly what the customer sees — but accepting,
+     * signing, and declining are the customer's call only.
+     */
+    public function isStaffViewing(): bool
+    {
+        return auth()->check() && auth()->user()->isStaff();
+    }
+
     public function accept(): void
     {
+        abort_if($this->isStaffViewing(), 403, 'Only the customer can accept this quote.');
+
         if ($this->quote->status !== 'sent' || $this->quote->isExpired()) {
             return;
         }
@@ -35,6 +47,8 @@ new class extends Component
 
     public function decline(): void
     {
+        abort_if($this->isStaffViewing(), 403, 'Only the customer can decline this quote.');
+
         if ($this->quote->status !== 'sent' || $this->quote->isExpired()) {
             return;
         }
@@ -107,7 +121,15 @@ new class extends Component
             <p class="text-slate-300">{{ $quote->note }}</p>
         @endif
 
-        @if(! $showDeclineForm)
+        @if($this->isStaffViewing())
+            <div class="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+                <flux:icon.eye class="size-5 text-amber-400 shrink-0 mt-0.5" />
+                <div class="text-sm text-amber-200">
+                    <div class="font-semibold mb-0.5">Staff preview</div>
+                    You're viewing this the way the customer sees it. Accepting, signing, and declining are only available to the customer — not from a staff session.
+                </div>
+            </div>
+        @elseif(! $showDeclineForm)
             <div class="space-y-4">
                 @if($quote->requiresSignature())
                     <div>

@@ -33,6 +33,8 @@ new class extends Component
 
     public function sendInvite(): void
     {
+        abort_unless(auth()->user()->isAdmin(), 403);
+
         $this->validate([
             'inviteEmail' => ['required', 'email'],
             'inviteRole' => ['required', 'in:'.implode(',', $this->invitableRoles())],

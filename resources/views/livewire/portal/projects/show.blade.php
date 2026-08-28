@@ -33,6 +33,8 @@ new class extends Component
 
     public function sendMessage(): void
     {
+        $this->authorize('view', $this->project);
+
         $this->validate(['newMessageBody' => 'required|min:1']);
 
         ProjectMessage::create([
@@ -46,6 +48,8 @@ new class extends Component
 
     public function payMilestone(int $milestoneId)
     {
+        $this->authorize('view', $this->project);
+
         $this->resetErrorBag("discountCode.{$milestoneId}");
 
         $milestone = ProjectMilestone::findOrFail($milestoneId);

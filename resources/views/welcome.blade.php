@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>ZeelotWeb | High-Performance Laravel Development</title>
+        <title>Zeelot | High-Performance Laravel Development</title>
 
         <link rel="icon" href="/favicon.png" type="image/png">
         <link rel="apple-touch-icon" href="/favicon.png">
@@ -128,8 +128,8 @@
             Trusted by teams building the next big thing
         </p>
 
-        <div class="flex flex-wrap items-center justify-center gap-6">
-            <a href="https://ValueAfrik.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+        <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-4 sm:gap-6">
+            <a href="https://ValueAfrik.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
                 <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
                     <img src="{{ asset('valueafrik.jpeg') }}" alt="ValueAfrik" class="h-12 w-12 object-contain">
                 </span>
@@ -139,7 +139,7 @@
                 </span>
             </a>
 
-            <a href="https://Tiecnoc.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:-rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+            <a href="https://Tiecnoc.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:-rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
                 <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
                     <img src="{{ asset('tiecnoc.png') }}" alt="Tiecnoc" class="h-12 w-12 object-contain">
                 </span>
@@ -149,7 +149,7 @@
                 </span>
             </a>
 
-            <a href="https://Taongaf.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
+            <a href="https://Taongaf.com" target="_blank" class="group flex items-center gap-4 px-6 py-5 w-full sm:w-auto bg-white dark:bg-white/[0.04] rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:shadow-cyan-100 dark:hover:shadow-cyan-500/10 hover:-translate-y-1.5 hover:rotate-1 hover:border-cyan-300 dark:hover:border-cyan-500/40 transition-all duration-300">
                 <span class="flex items-center justify-center w-16 h-16 rounded-xl bg-white shrink-0 border border-slate-100 overflow-hidden group-hover:scale-105 transition-transform duration-300">
                     <img src="{{ asset('taongaf.png') }}" alt="Taongaf" class="h-16 w-16 object-contain">
                 </span>
