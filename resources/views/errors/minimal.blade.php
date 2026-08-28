@@ -66,7 +66,7 @@
                 font-size: 1.05rem;
             }
 
-            .logo img { height: 2rem; width: 2rem; border-radius: 0.375rem; }
+            .logo svg { height: 1.75rem; width: 1.75rem; color: var(--accent); }
 
             .code {
                 position: relative;
@@ -133,7 +133,7 @@
         <div class="grid-bg"></div>
 
         <a href="{{ url('/') }}" class="logo">
-            <img src="{{ asset('7.jpg') }}" alt="">
+            <x-app-logo-icon />
             ZeelotWeb
         </a>
 

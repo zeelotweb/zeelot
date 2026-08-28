@@ -40,7 +40,7 @@
     <div class="container mx-auto px-4 sm:px-6 py-4">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2 text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
-                <span class="flex rounded-md overflow-hidden ring-1 ring-slate-200 dark:ring-white/10 p-1 bg-white"><x-app-logo-icon /></span>
+                <x-app-logo-icon class="size-8 text-cyan-600 dark:text-cyan-400" />
                 <span>Zeelot<span class="text-cyan-500 dark:text-cyan-400">Web</span></span>
             </div>
             <div class="hidden md:flex items-center gap-8 font-medium text-slate-600 dark:text-slate-400 text-sm">

@@ -8,7 +8,7 @@
             <div class="flex w-full max-w-md flex-col gap-6">
                 <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium" wire:navigate>
                     <span class="flex h-9 w-fit items-center justify-center rounded-md">
-                        <x-app-logo-icon class="size-9 fill-current text-black " />
+                        <x-app-logo-icon class="size-9 text-cyan-400" />
                     </span>
 
                     <span class="sr-only">{{ config('app.name', 'zeelotWEB') }}</span>
