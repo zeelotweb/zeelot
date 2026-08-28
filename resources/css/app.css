@@ -26,6 +26,22 @@
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    /* Brand accent, anchored on the logo's exact color (#265692 = cyan-600).
+       The site uses Tailwind's `cyan-*` utilities everywhere for its accent,
+       so overriding the palette here recolors the whole site without
+       touching every file individually. */
+    --color-cyan-50: #f3f7fc;
+    --color-cyan-100: #e7eff9;
+    --color-cyan-200: #cadcf1;
+    --color-cyan-300: #9ebee6;
+    --color-cyan-400: #699ad8;
+    --color-cyan-500: #3577ca;
+    --color-cyan-600: #265692;
+    --color-cyan-700: #1f4575;
+    --color-cyan-800: #18375d;
+    --color-cyan-900: #142d4d;
+    --color-cyan-950: #0c1a2d;
 }
 
 @layer theme {
