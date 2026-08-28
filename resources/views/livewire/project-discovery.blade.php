@@ -68,16 +68,41 @@
                     <label class="block text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Select the solutions you need — mix and match</label>
                     <div class="grid sm:grid-cols-2 gap-3">
                         @foreach($this->packages() as $package)
-                            <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition {{ in_array($package->id, $selectedPackageIds) ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600' }}">
-                                <input type="checkbox" wire:model.live="selectedPackageIds" value="{{ $package->id }}" class="mt-1 accent-cyan-500">
-                                <div>
-                                    <div class="font-semibold text-slate-900 dark:text-white">{{ $package->name }}</div>
-                                    @if($package->description)
-                                        <div class="text-sm text-slate-500 dark:text-slate-400">{{ $package->description }}</div>
-                                    @endif
-                                    <div class="text-sm font-mono text-cyan-600 dark:text-cyan-400 mt-1">${{ number_format($package->price, 0) }}</div>
-                                </div>
-                            </label>
+                            <div
+                                x-data="{ open: false }"
+                                class="rounded-xl border transition {{ in_array($package->id, $selectedPackageIds) ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600' }}"
+                            >
+                                <label class="flex items-center gap-3 p-4 cursor-pointer">
+                                    <input type="checkbox" wire:model.live="selectedPackageIds" value="{{ $package->id }}" class="accent-cyan-500">
+                                    <span class="flex-1 font-semibold text-slate-900 dark:text-white">{{ $package->name }}</span>
+                                    <span class="text-sm font-mono text-cyan-600 dark:text-cyan-400 whitespace-nowrap">${{ number_format($package->price, 0) }}</span>
+                                </label>
+
+                                @if($package->description || !empty($package->features))
+                                    <div class="px-4 pb-3">
+                                        <button type="button" @click="open = !open" class="flex items-center gap-1 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition">
+                                            <span x-text="open ? 'Hide details' : 'What\'s included'"></span>
+                                            <flux:icon.chevron-down x-bind:class="open ? 'rotate-180' : ''" class="size-3 transition-transform" />
+                                        </button>
+
+                                        <div x-show="open" class="mt-2 space-y-2">
+                                            @if($package->description)
+                                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ $package->description }}</p>
+                                            @endif
+                                            @if(!empty($package->features))
+                                                <ul class="space-y-1">
+                                                    @foreach($package->features as $feature)
+                                                        <li class="flex items-start gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                                            <flux:icon.check class="size-3.5 text-cyan-500 mt-0.5 shrink-0" />
+                                                            <span>{{ $feature }}</span>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         @endforeach
                     </div>
                     @error('selectedPackageIds') <span class="text-red-500 dark:text-red-400 text-xs mt-2 block">{{ $message }}</span> @enderror
