@@ -46,6 +46,10 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'password' => $input['password'],
             'role' => $invitation->role ?? 'customer',
+            // Clicking a link delivered to this exact email already proves
+            // ownership — an invited signup doesn't need a second, separate
+            // "verify your email" round-trip on top of that.
+            'email_verified_at' => $invitation ? now() : null,
         ]);
 
         $invitation?->update(['accepted_at' => now()]);

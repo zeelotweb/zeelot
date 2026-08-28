@@ -20,7 +20,7 @@ class PackageSeeder extends Seeder
                 'slug' => 'simple-static-site',
                 'category' => 'static',
                 'description' => 'A clean, fast marketing site for a business that just needs to be found and trusted online.',
-                'price' => 1500,
+                'price' => 2000,
                 'sort_order' => 0,
                 'features' => [
                     'Responsive design',
@@ -35,7 +35,7 @@ class PackageSeeder extends Seeder
                 'slug' => 'complete-static-auth',
                 'category' => 'static_auth',
                 'description' => 'Everything in Simple Static, plus accounts so visitors can log in and see something just for them.',
-                'price' => 3000,
+                'price' => 5000,
                 'sort_order' => 1,
                 'features' => [
                     'Everything in Simple Static',
@@ -50,7 +50,7 @@ class PackageSeeder extends Seeder
                 'slug' => 'social-network-features',
                 'category' => 'social',
                 'description' => 'The building blocks of a social platform — profiles, feeds, and ways for people to connect.',
-                'price' => 9000,
+                'price' => 28000,
                 'sort_order' => 2,
                 'features' => [
                     'User profiles',
@@ -66,7 +66,7 @@ class PackageSeeder extends Seeder
                 'slug' => 'media-platform',
                 'category' => 'media',
                 'description' => 'Upload, organize, and stream media content to your audience.',
-                'price' => 6000,
+                'price' => 30000,
                 'sort_order' => 3,
                 'features' => [
                     'Media uploads (video, audio, image)',
@@ -81,7 +81,7 @@ class PackageSeeder extends Seeder
                 'slug' => 'ecommerce-store',
                 'category' => 'ecommerce',
                 'description' => 'A full online store, from product catalog to checkout.',
-                'price' => 7500,
+                'price' => 10000,
                 'sort_order' => 4,
                 'features' => [
                     'Product catalog',
@@ -97,7 +97,7 @@ class PackageSeeder extends Seeder
                 'slug' => 'staff-client-portal',
                 'category' => 'portal',
                 'description' => 'A private workspace for your team and customers — the same kind of system powering this site.',
-                'price' => 12000,
+                'price' => 22000,
                 'sort_order' => 5,
                 'features' => [
                     'Role-based access (staff/admin/customer)',
