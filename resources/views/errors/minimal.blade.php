@@ -66,7 +66,7 @@
                 font-size: 1.05rem;
             }
 
-            .logo svg { height: 1.75rem; width: 1.75rem; color: var(--accent); }
+            .logo img { height: 1.75rem; width: auto; }
 
             .code {
                 position: relative;
@@ -133,7 +133,7 @@
         <div class="grid-bg"></div>
 
         <a href="{{ url('/') }}" class="logo">
-            <x-app-logo-icon />
+            <img src="{{ asset('logo/mark-dark-mode.png') }}" alt="ZeelotWeb">
             ZeelotWeb
         </a>
 

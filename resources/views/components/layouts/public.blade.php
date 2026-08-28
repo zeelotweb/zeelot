@@ -7,7 +7,7 @@
         <header class="border-b border-white/10">
             <div class="max-w-3xl mx-auto px-6 py-5">
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-2">
-                    <x-app-logo-icon class="size-7 fill-current text-cyan-400" />
+                    <x-app-logo-icon class="size-7" />
                     <span class="font-bold tracking-tight">{{ config('app.name', 'ZeelotWeb') }}</span>
                 </a>
             </div>
