@@ -19,6 +19,8 @@ class ProjectMilestone extends Model
         'paid_at',
         'stripe_checkout_session_id',
         'stripe_payment_intent_id',
+        'discount_code_id',
+        'discount_amount',
     ];
 
     protected function casts(): array
@@ -27,6 +29,7 @@ class ProjectMilestone extends Model
             'amount' => 'decimal:2',
             'invoiced_at' => 'datetime',
             'paid_at' => 'datetime',
+            'discount_amount' => 'decimal:2',
         ];
     }
 

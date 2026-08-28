@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DiscountCode;
 use App\Models\ProjectMilestone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -30,6 +31,18 @@ class StripeWebhookController extends Controller
             $milestoneId = $session->metadata->milestone_id ?? null;
 
             if ($milestoneId && $milestone = ProjectMilestone::find($milestoneId)) {
+                $discountCodeId = $session->metadata->discount_code_id ?? null;
+
+                // Guard against a redelivered webhook redeeming the code twice.
+                if ($discountCodeId && $milestone->status !== 'paid') {
+                    $milestone->update([
+                        'discount_code_id' => $discountCodeId,
+                        'discount_amount' => $session->metadata->discount_amount ?? null,
+                    ]);
+
+                    DiscountCode::find($discountCodeId)?->redeem();
+                }
+
                 $milestone->markPaid($session->payment_intent);
             }
         }

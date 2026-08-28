@@ -88,7 +88,7 @@ new class extends Component
         $this->validate([
             'quoteItems' => 'required|array|min:1',
             'quoteItems.*.title' => 'required|string|min:2',
-            'quoteItems.*.amount' => 'required|numeric|min:0',
+            'quoteItems.*.amount' => 'required|numeric',
             'quoteValidDays' => 'required|integer|min:1',
         ]);
 

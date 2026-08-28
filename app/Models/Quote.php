@@ -169,12 +169,24 @@ class Quote extends Model
             'is_pro_bono' => $this->lead->is_pro_bono,
         ]);
 
-        foreach ($this->lineItems as $i => $item) {
+        // Discount/adjustment line items (negative amounts) don't become their
+        // own milestone — a milestone has to be a payable amount. Instead,
+        // the discount is distributed proportionally across the billable
+        // items so each milestone's amount already has it baked in, and the
+        // total across milestones still matches what the customer agreed to.
+        $billableItems = $this->lineItems->filter(fn ($item) => $item->amount > 0)->values();
+        $totalDiscount = (float) $this->lineItems->filter(fn ($item) => $item->amount < 0)->sum('amount');
+        $billableSubtotal = (float) $billableItems->sum('amount');
+
+        foreach ($billableItems as $i => $item) {
+            $share = $billableSubtotal > 0 ? ((float) $item->amount) / $billableSubtotal : 0;
+            $amount = max(0, round((float) $item->amount + ($totalDiscount * $share), 2));
+
             ProjectMilestone::create([
                 'project_id' => $project->id,
                 'title' => $item->title,
                 'description' => $item->description,
-                'amount' => $item->amount,
+                'amount' => $amount,
                 'sort_order' => $i,
                 'status' => 'pending',
             ]);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\DiscountCode;
 use App\Models\Project;
 use App\Models\ProjectMessage;
 use App\Models\ProjectMilestone;
@@ -10,6 +11,7 @@ new class extends Component
     public Project $project;
     public string $newMessageBody = '';
     public ?string $checkoutStatus = null;
+    public array $discountCode = [];
 
     public function mount(Project $project): void
     {
@@ -44,10 +46,39 @@ new class extends Component
 
     public function payMilestone(int $milestoneId)
     {
+        $this->resetErrorBag("discountCode.{$milestoneId}");
+
         $milestone = ProjectMilestone::findOrFail($milestoneId);
 
         abort_unless($milestone->project_id === $this->project->id, 403);
         abort_unless($milestone->status === 'invoiced', 403);
+
+        $amount = (float) $milestone->amount;
+        $discountCode = null;
+        $discountAmount = 0;
+
+        $codeInput = trim($this->discountCode[$milestoneId] ?? '');
+
+        if ($codeInput) {
+            $discountCode = DiscountCode::where('code', strtoupper($codeInput))->first();
+
+            if (! $discountCode || ! $discountCode->isValidFor(auth()->user()->email)) {
+                $this->addError("discountCode.{$milestoneId}", 'That code is not valid.');
+
+                return;
+            }
+
+            $discountAmount = $discountCode->discountFor($amount);
+        }
+
+        $chargeAmount = max(0, $amount - $discountAmount);
+
+        $metadata = ['milestone_id' => (string) $milestone->id];
+
+        if ($discountCode) {
+            $metadata['discount_code_id'] = (string) $discountCode->id;
+            $metadata['discount_amount'] = (string) $discountAmount;
+        }
 
         $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
 
@@ -57,11 +88,11 @@ new class extends Component
                 'price_data' => [
                     'currency' => 'usd',
                     'product_data' => ['name' => $milestone->title],
-                    'unit_amount' => (int) round($milestone->amount * 100),
+                    'unit_amount' => (int) round($chargeAmount * 100),
                 ],
                 'quantity' => 1,
             ]],
-            'metadata' => ['milestone_id' => $milestone->id],
+            'metadata' => $metadata,
             'success_url' => route('portal.projects.show', $this->project).'?checkout=success',
             'cancel_url' => route('portal.projects.show', $this->project).'?checkout=cancelled',
         ]);
@@ -123,18 +154,37 @@ new class extends Component
                             <div class="text-sm text-slate-500 dark:text-slate-400">{{ $milestone->description }}</div>
                         @endif
                         <div class="text-sm text-slate-500 dark:text-slate-400">${{ number_format($milestone->amount, 2) }}</div>
+                        @if($milestone->status === 'paid' && $milestone->discount_amount)
+                            <div class="text-xs text-cyan-600 dark:text-cyan-400 mt-0.5">-${{ number_format($milestone->discount_amount, 2) }} discount applied</div>
+                        @endif
                     </div>
-                    <div class="flex items-center gap-3">
-                        <flux:badge :color="match($milestone->status) {
-                            'pending' => 'zinc',
-                            'invoiced' => 'amber',
-                            'paid' => 'green',
-                            'waived' => 'blue',
-                            default => 'zinc',
-                        }">{{ $milestone->status === 'invoiced' ? 'Awaiting Payment' : ucfirst($milestone->status) }}</flux:badge>
+                    <div class="flex flex-col items-end gap-2">
+                        <div class="flex items-center gap-3">
+                            <flux:badge :color="match($milestone->status) {
+                                'pending' => 'zinc',
+                                'invoiced' => 'amber',
+                                'paid' => 'green',
+                                'waived' => 'blue',
+                                default => 'zinc',
+                            }">{{ $milestone->status === 'invoiced' ? 'Awaiting Payment' : ucfirst($milestone->status) }}</flux:badge>
+
+                            @if($milestone->status === 'invoiced')
+                                <flux:button size="sm" variant="primary" wire:click="payMilestone({{ $milestone->id }})">Pay Now</flux:button>
+                            @endif
+                        </div>
 
                         @if($milestone->status === 'invoiced')
-                            <flux:button size="sm" variant="primary" wire:click="payMilestone({{ $milestone->id }})">Pay Now</flux:button>
+                            <div>
+                                <input
+                                    wire:model="discountCode.{{ $milestone->id }}"
+                                    type="text"
+                                    placeholder="Discount code"
+                                    class="w-32 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 uppercase text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cyan-500"
+                                >
+                                @error("discountCode.{$milestone->id}")
+                                    <div class="text-red-500 dark:text-red-400 text-xs mt-1 text-right">{{ $message }}</div>
+                                @enderror
+                            </div>
                         @endif
                     </div>
                 </div>
